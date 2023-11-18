@@ -10,7 +10,7 @@ data class GameNode(
     val isMine: Boolean = value == BOMB_EMOJI
     val isEmpty: Boolean = value.isEmpty()
 
-    internal fun open() = if (isOpen) this else copy(isOpen = true)
+    internal fun open() = copy(isOpen = true)
 
     internal fun toggleMark() = copy(
         mark = MarkType.entries.toTypedArray().let { allMarks ->
