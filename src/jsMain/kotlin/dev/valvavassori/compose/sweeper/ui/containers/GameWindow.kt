@@ -13,6 +13,7 @@ import dev.valvavassori.compose.sweeper.ui.components.nineeightcss.StatusBar
 import dev.valvavassori.compose.sweeper.ui.components.nineeightcss.StatusBarField
 import dev.valvavassori.compose.sweeper.ui.components.nineeightcss.TitleBar
 import dev.valvavassori.compose.sweeper.ui.components.nineeightcss.Window
+import dev.valvavassori.compose.sweeper.ui.consts.ImageConstants
 import dev.valvavassori.compose.sweeper.ui.theme.MineSweeperCSS
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Span
@@ -29,7 +30,8 @@ fun GameWindow(game: MineSweeperBoard) {
         attrs = { classes(MineSweeperCSS.gameWindow) },
     ) {
         TitleBar(
-            title = "Compose Mine Sweeper",
+            title = "Minesweeper",
+            icon = ImageConstants.Applications.mineSweeper,
             buttons = {
                 MinimizeButton()
                 CloseButton()

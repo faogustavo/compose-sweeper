@@ -1,5 +1,6 @@
 package dev.valvavassori.compose.sweeper.ui.theme
 
+import dev.valvavassori.compose.sweeper.ui.consts.ImageConstants
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -8,12 +9,20 @@ import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.StyleSheet
 import org.jetbrains.compose.web.css.alignItems
 import org.jetbrains.compose.web.css.backgroundColor
+import org.jetbrains.compose.web.css.backgroundImage
+import org.jetbrains.compose.web.css.backgroundPosition
+import org.jetbrains.compose.web.css.backgroundRepeat
+import org.jetbrains.compose.web.css.backgroundSize
+import org.jetbrains.compose.web.css.bottom
 import org.jetbrains.compose.web.css.color
 import org.jetbrains.compose.web.css.display
 import org.jetbrains.compose.web.css.fontSize
 import org.jetbrains.compose.web.css.fontWeight
 import org.jetbrains.compose.web.css.height
 import org.jetbrains.compose.web.css.justifyContent
+import org.jetbrains.compose.web.css.left
+import org.jetbrains.compose.web.css.marginLeft
+import org.jetbrains.compose.web.css.marginRight
 import org.jetbrains.compose.web.css.marginTop
 import org.jetbrains.compose.web.css.minHeight
 import org.jetbrains.compose.web.css.minWidth
@@ -35,6 +44,13 @@ object MineSweeperCSS: StyleSheet() {
             overflow("hidden")
         }
 
+        "body" style {
+            backgroundImage("url(${ImageConstants.background})")
+            backgroundSize("cover")
+            backgroundRepeat("no-repeat")
+            backgroundPosition("center")
+        }
+
         "table" style {
             property("border-collapse", "collapse")
             property("border-spacing", "0")
@@ -42,6 +58,43 @@ object MineSweeperCSS: StyleSheet() {
 
         "td" style {
             padding(0.px)
+        }
+    }
+
+    val taskBar by style {
+        position(Position.Absolute)
+        display(DisplayStyle.Flex)
+        alignItems(AlignItems.Center)
+        justifyContent(JustifyContent.FlexStart)
+
+        left(0.px)
+        bottom(0.px)
+
+        width(100.percent)
+        height(32.px)
+
+        backgroundColor(Color.silver)
+        property("z-index", "999")
+
+        "#startButton" style {
+            fontWeight("bold")
+            marginLeft(4.px)
+        }
+
+        "button" style {
+            display(DisplayStyle.Flex)
+            alignItems(AlignItems.Center)
+            justifyContent(JustifyContent.FlexStart)
+
+            "img" style {
+                width(20.px)
+                height(20.px)
+                marginRight(4.px)
+            }
+        }
+
+        "button.task" style {
+            width(200.px)
         }
     }
 

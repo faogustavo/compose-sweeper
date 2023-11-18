@@ -33,5 +33,13 @@ object NineEightCSS : StyleSheet() {
             width(100.percent)
             marginBottom(12.px)
         }
+
+        className(titleBar) style {
+            "img" style {
+                width(12.px)
+                height(12.px)
+                marginRight(4.px)
+            }
+        }
     }
 }
