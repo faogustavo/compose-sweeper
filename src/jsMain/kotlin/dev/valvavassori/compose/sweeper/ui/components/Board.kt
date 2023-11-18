@@ -45,6 +45,7 @@ private fun BoardNode(
                     setOfNotNull(
                         MineSweeperCSS.gameButton,
                         "active".takeIf { node.isOpen },
+                        "bt-${node.value}".takeIf { node.isOpen },
                     )
                 )
                 onClick {

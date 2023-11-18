@@ -2,6 +2,7 @@ package dev.valvavassori.compose.sweeper.ui.theme
 
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.StyleSheet
+import org.jetbrains.compose.web.css.backgroundColor
 import org.jetbrains.compose.web.css.color
 import org.jetbrains.compose.web.css.fontWeight
 import org.jetbrains.compose.web.css.height
@@ -33,6 +34,42 @@ object MineSweeperCSS: StyleSheet() {
 
         self + className("active") style {
             fontWeight("bold")
+        }
+
+        self + className("bt-1") style {
+            color(Color.blue)
+        }
+
+        self + className("bt-2") style {
+            color(Color.darkgreen)
+        }
+
+        self + className("bt-3") style {
+            color(Color.red)
+        }
+
+        self + className("bt-4") style {
+            color(Color.darkblue)
+        }
+
+        self + className("bt-5") style {
+            color(Color.darkred)
+        }
+
+        self + className("bt-6") style {
+            color(Color.cyan)
+        }
+
+        self + className("bt-7") style {
+            color(Color.black)
+        }
+
+        self + className("bt-8") style {
+            color(Color.gray)
+        }
+
+        self + className("bt-💣") style {
+            backgroundColor(Color("#c52f2f"))
         }
     }
 }
