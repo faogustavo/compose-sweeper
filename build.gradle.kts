@@ -23,6 +23,12 @@ kotlin {
         binaries.executable()
     }
     sourceSets {
+        all {
+            languageSettings.apply {
+                optIn("kotlin.ExperimentalStdlibApi")
+            }
+        }
+
         val jsMain by getting {
             dependencies {
                 implementation(compose.html.core)
