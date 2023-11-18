@@ -70,6 +70,7 @@ class MineSweeperBoard(difficulty: Difficulty): AutoCloseable {
             mineCount += 1
         }
 
+        _playerState.value = PlayerState.ALIVE
         _gameDuration.value = 0
         _playsCount.value = 0
         _boardState.value = matrix.map { it.toList() }
