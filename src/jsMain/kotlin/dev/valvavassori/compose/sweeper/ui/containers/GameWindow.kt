@@ -23,7 +23,11 @@ import org.jetbrains.compose.web.dom.Tr
 
 @Composable
 fun GameWindow(game: MineSweeperBoard) {
-    Window {
+    Window(
+        viewId = "game-window",
+        draggable = true,
+        attrs = { classes(MineSweeperCSS.gameWindow) },
+    ) {
         TitleBar(
             title = "Compose Mine Sweeper",
             buttons = {

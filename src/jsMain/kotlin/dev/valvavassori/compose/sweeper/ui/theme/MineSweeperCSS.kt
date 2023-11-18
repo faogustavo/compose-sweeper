@@ -4,6 +4,7 @@ import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.JustifyContent
+import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.StyleSheet
 import org.jetbrains.compose.web.css.alignItems
 import org.jetbrains.compose.web.css.backgroundColor
@@ -16,7 +17,10 @@ import org.jetbrains.compose.web.css.justifyContent
 import org.jetbrains.compose.web.css.marginTop
 import org.jetbrains.compose.web.css.minHeight
 import org.jetbrains.compose.web.css.minWidth
+import org.jetbrains.compose.web.css.overflow
 import org.jetbrains.compose.web.css.padding
+import org.jetbrains.compose.web.css.percent
+import org.jetbrains.compose.web.css.position
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.width
 
@@ -25,6 +29,12 @@ object MineSweeperCSS: StyleSheet() {
     const val higherContainer = "higherContainer"
 
     init {
+        "html, body" style {
+            height(98.percent)
+            width(100.percent)
+            overflow("hidden")
+        }
+
         "table" style {
             property("border-collapse", "collapse")
             property("border-spacing", "0")
@@ -33,6 +43,10 @@ object MineSweeperCSS: StyleSheet() {
         "td" style {
             padding(0.px)
         }
+    }
+
+    val gameWindow by style {
+        position(Position.Absolute)
     }
 
     val gameBar by style {

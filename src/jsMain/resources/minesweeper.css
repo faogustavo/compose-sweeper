@@ -1,4 +1,11 @@
 /** Box shadows do not work on compose ¯\_(ツ)_/¯ **/
+body {
+    background-image: url("https://98.js.org/images/clouds.jpg");
+    background-size: cover;
+    background-position: center center;
+    touch-action: none;
+}
+
 button.active {
     box-shadow:
         inset -1px -1px #ffffff,
