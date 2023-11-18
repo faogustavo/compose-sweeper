@@ -4,21 +4,42 @@ import dev.valvavassori.compose.sweeper.core.ext.isDigit
 import dev.valvavassori.compose.sweeper.core.model.Difficulty
 import dev.valvavassori.compose.sweeper.core.model.GameNode
 import dev.valvavassori.compose.sweeper.core.model.PlayerState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-class MineSweeperBoard(private val difficulty: Difficulty) {
-    private val rows = difficulty.size.first
-    private val columns = difficulty.size.second
+class MineSweeperBoard(difficulty: Difficulty): AutoCloseable {
+    private val coroutineScope by lazy { MainScope() }
+    private var rows = 0
+    private var columns = 0
 
     private val _playerState = MutableStateFlow(PlayerState.ALIVE)
     val playerState = _playerState.asStateFlow()
 
-    private val _boardState: MutableStateFlow<List<List<GameNode>>>
-    val boardState: StateFlow<List<List<GameNode>>>
+    private val _boardState = MutableStateFlow<List<List<GameNode>>>(emptyList())
+    val boardState: StateFlow<List<List<GameNode>>> = _boardState.asStateFlow()
 
-    init {
+    private var tickTask: Job? = null
+    private val _gameDuration = MutableStateFlow(0)
+    val gameDuration = _gameDuration.asStateFlow()
+
+    private val _playsCount = MutableStateFlow(0)
+    val playsCount = _playsCount.asStateFlow()
+
+    init { newGame(difficulty) }
+
+    fun newGame(difficulty: Difficulty) {
+        tickTask?.cancel()
+        tickTask = null
+
+        rows = difficulty.size.first
+        columns = difficulty.size.second
+
         // Sorting bombs
         var mineCount = 0
         val rowRange = (0..<rows)
@@ -49,30 +70,30 @@ class MineSweeperBoard(private val difficulty: Difficulty) {
             mineCount += 1
         }
 
-        _boardState = MutableStateFlow(matrix.map { it.toList() })
-        boardState = _boardState.asStateFlow()
-    }
-
-    fun toggleMark(position: Pair<Int, Int>) {
-        // When already dead, does not compute the play
-        if (_playerState.value != PlayerState.ALIVE) return
-
-        val matrix = _boardState.value.map { it.toMutableList() }
-        val node = matrix[position.first][position.second]
-
-        // When already open, do nothing
-        if (node.isOpen) return
-
-        matrix[position.first][position.second] = node.toggleMark()
+        _gameDuration.value = 0
+        _playsCount.value = 0
         _boardState.value = matrix.map { it.toList() }
     }
 
-    fun open(position: Pair<Int, Int>) {
+    fun toggleMark(position: Pair<Int, Int>) = useMatrix { matrix ->
         // When already dead, does not compute the play
-        if (_playerState.value != PlayerState.ALIVE) return
+        if (_playerState.value != PlayerState.ALIVE) return@useMatrix
 
-        val matrix = _boardState.value.map { it.toMutableList() }
-        openInternal(matrix, position)
+        val node = matrix[position.first][position.second]
+
+        // When already open, do nothing
+        if (node.isOpen) return@useMatrix
+
+        _playsCount.value += 1
+        matrix[position.first][position.second] = node.toggleMark()
+    }
+
+    fun open(position: Pair<Int, Int>) = useMatrix { matrix ->
+        // When already dead, does not compute the play
+        if (_playerState.value != PlayerState.ALIVE) return@useMatrix
+        if (!openInternal(matrix, position)) return@useMatrix
+
+        _playsCount.value += 1
 
         val allNumbersOpen = matrix
             .flatten()
@@ -80,26 +101,32 @@ class MineSweeperBoard(private val difficulty: Difficulty) {
             .none { !it.isOpen }
 
         if (allNumbersOpen) _playerState.value = PlayerState.VICTORY
-        _boardState.value = matrix.map { it.toList() }
+    }
+
+    override fun close() {
+        coroutineScope.cancel()
     }
 
     private fun openInternal(
         matrix: List<MutableList<GameNode>>,
         position: Pair<Int, Int>,
-    ) {
+    ): Boolean {
         val node = matrix[position.first][position.second]
 
         // If node is already open, nothing is required
-        if (node.isOpen) return
+        if (node.isOpen) return false
 
         matrix[position.first][position.second] = node.open()
 
         if (node.isMine) {
             _playerState.value = PlayerState.DEAD
-            return
+            tickTask?.cancel()
+            tickTask = null
+            return false
         }
 
         if (node.isEmpty) expandOnEmpty(matrix, position)
+        return true
     }
 
     private fun expandOnEmpty(
@@ -116,6 +143,24 @@ class MineSweeperBoard(private val difficulty: Difficulty) {
 
             openInternal(matrix, nextRow to nextColumn)
         }
+    }
+
+    private fun startTimer() {
+        if (tickTask != null) return
+        tickTask = coroutineScope.launch {
+            while(true) {
+                _gameDuration.value += 1
+                delay(1000)
+            }
+        }
+    }
+
+    private fun useMatrix(block: (List<MutableList<GameNode>>) -> Unit) {
+        if (_playerState.value == PlayerState.ALIVE) startTimer()
+
+        val matrix = _boardState.value.map { it.toMutableList() }
+        block(matrix)
+        _boardState.value = matrix.map { it.toList() }
     }
 }
 
