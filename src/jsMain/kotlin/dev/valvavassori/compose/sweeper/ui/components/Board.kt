@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import dev.valvavassori.compose.sweeper.core.MineSweeperBoard
 import dev.valvavassori.compose.sweeper.core.model.GameNode
+import dev.valvavassori.compose.sweeper.ui.theme.MineSweeperCSS
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Table
 import org.jetbrains.compose.web.dom.Td
@@ -40,6 +41,12 @@ private fun BoardNode(
     Td {
         Button(
             attrs = {
+                classes(
+                    setOfNotNull(
+                        MineSweeperCSS.gameButton,
+                        "active".takeIf { node.isOpen },
+                    )
+                )
                 onClick {
                     onClick(rowIdx to columnIdx)
                 }
