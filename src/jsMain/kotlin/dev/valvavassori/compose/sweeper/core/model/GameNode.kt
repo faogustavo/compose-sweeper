@@ -10,6 +10,13 @@ data class GameNode(
     val isMine: Boolean = value == BOMB_EMOJI
     val isEmpty: Boolean = value.isEmpty()
 
+    fun renderValue(playerState: PlayerState) = when {
+        isOpen -> value
+        playerState == PlayerState.DEAD && isMine -> value
+        playerState == PlayerState.VICTORY && isMine -> "🚩"
+        else -> mark.symbol
+    }
+
     internal fun open() = copy(isOpen = true)
 
     internal fun toggleMark() = copy(

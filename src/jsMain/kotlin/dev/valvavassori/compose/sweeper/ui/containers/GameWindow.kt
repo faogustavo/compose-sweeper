@@ -1,6 +1,7 @@
 package dev.valvavassori.compose.sweeper.ui.containers
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +10,7 @@ import androidx.compose.runtime.setValue
 import dev.valvavassori.compose.sweeper.core.MineSweeperBoard
 import dev.valvavassori.compose.sweeper.core.model.Difficulty
 import dev.valvavassori.compose.sweeper.core.model.GameNode
+import dev.valvavassori.compose.sweeper.core.model.PlayerState
 import dev.valvavassori.compose.sweeper.ui.components.nineeightcss.CloseButton
 import dev.valvavassori.compose.sweeper.ui.components.nineeightcss.Container
 import dev.valvavassori.compose.sweeper.ui.components.nineeightcss.MinimizeButton
@@ -19,12 +21,15 @@ import dev.valvavassori.compose.sweeper.ui.components.nineeightcss.Window
 import dev.valvavassori.compose.sweeper.ui.consts.ImageConstants
 import dev.valvavassori.compose.sweeper.ui.effects.KeyPressEffect
 import dev.valvavassori.compose.sweeper.ui.theme.MineSweeperCSS
+import kotlinx.browser.document
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Table
 import org.jetbrains.compose.web.dom.Td
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.Tr
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.get
 
 @Composable
 fun GameWindow(game: MineSweeperBoard) {
@@ -93,6 +98,8 @@ private fun Header(game: MineSweeperBoard) {
 @Composable
 private fun Board(game: MineSweeperBoard) {
     val board by game.boardState.collectAsState()
+    val state by game.playerState.collectAsState()
+
     Container(
         windowBody = false,
         attrs = {
@@ -110,7 +117,9 @@ private fun Board(game: MineSweeperBoard) {
                             rowIdx = rowIdx,
                             columnIdx = columnIdx,
                             node = node,
+                            playerState = state,
                             onClick = { game.open(it) },
+                            onToggle = { game.toggleMark(it) },
                         )
                     }
                 }
@@ -124,7 +133,9 @@ private fun BoardNode(
     rowIdx: Int,
     columnIdx: Int,
     node: GameNode,
+    playerState: PlayerState,
     onClick: (Pair<Int, Int>) -> Unit,
+    onToggle: (Pair<Int, Int>) -> Unit,
 ) {
     Td {
         Button(
@@ -136,12 +147,12 @@ private fun BoardNode(
                         "bt-${node.value}".takeIf { node.isOpen },
                     )
                 )
-                onClick {
-                    onClick(rowIdx to columnIdx)
+                onClick { onClick(rowIdx to columnIdx) }
+                addEventListener("contextmenu") {
+                    it.preventDefault()
+                    onToggle(rowIdx to columnIdx)
                 }
             }
-        ) {
-            Text(if (node.isOpen) node.value else "")
-        }
+        ) { Text(node.renderValue(playerState)) }
     }
 }
