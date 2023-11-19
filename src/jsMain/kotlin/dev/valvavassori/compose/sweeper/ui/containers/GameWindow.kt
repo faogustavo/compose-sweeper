@@ -3,6 +3,9 @@ package dev.valvavassori.compose.sweeper.ui.containers
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import dev.valvavassori.compose.sweeper.core.MineSweeperBoard
 import dev.valvavassori.compose.sweeper.core.model.Difficulty
 import dev.valvavassori.compose.sweeper.core.model.GameNode
@@ -14,6 +17,7 @@ import dev.valvavassori.compose.sweeper.ui.components.nineeightcss.StatusBarFiel
 import dev.valvavassori.compose.sweeper.ui.components.nineeightcss.TitleBar
 import dev.valvavassori.compose.sweeper.ui.components.nineeightcss.Window
 import dev.valvavassori.compose.sweeper.ui.consts.ImageConstants
+import dev.valvavassori.compose.sweeper.ui.effects.KeyPressEffect
 import dev.valvavassori.compose.sweeper.ui.theme.MineSweeperCSS
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Span
@@ -24,6 +28,12 @@ import org.jetbrains.compose.web.dom.Tr
 
 @Composable
 fun GameWindow(game: MineSweeperBoard) {
+    var dialogVisible by remember { mutableStateOf(false) }
+
+    KeyPressEffect(112) { // F1 press
+        dialogVisible = true
+    }
+
     Window(
         viewId = "game-window",
         draggable = true,
@@ -44,6 +54,12 @@ fun GameWindow(game: MineSweeperBoard) {
         StatusBar {
             StatusBarField { Text("Press F1 to open menu") }
         }
+    }
+
+    if (dialogVisible) {
+        GameMenu(
+            onCloseClick = { dialogVisible = false },
+        )
     }
 }
 
