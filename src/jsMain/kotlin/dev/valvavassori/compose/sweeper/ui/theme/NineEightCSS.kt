@@ -1,7 +1,9 @@
 package dev.valvassori.theme
 
+import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
 
+@OptIn(ExperimentalComposeWebApi::class)
 object NineEightCSS : StyleSheet() {
     const val window = "window"
     const val titleBar = "title-bar"
@@ -19,6 +21,10 @@ object NineEightCSS : StyleSheet() {
 
         className(window) style {
             property("inline-size", "min-content")
+            position(Position.Absolute)
+            top(50.percent)
+            left(50.percent)
+            transform { translate(-50.percent, -50.percent) }
         }
 
         className(windowBody) style {

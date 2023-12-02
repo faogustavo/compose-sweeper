@@ -42,7 +42,6 @@ fun GameWindow(game: MineSweeperBoard) {
     Window(
         viewId = "game-window",
         draggable = true,
-        attrs = { classes(MineSweeperCSS.gameWindow) },
     ) {
         TitleBar(
             title = "Minesweeper",
@@ -63,7 +62,12 @@ fun GameWindow(game: MineSweeperBoard) {
 
     if (dialogVisible) {
         GameMenu(
+            currentDifficulty = game.difficulty,
             onCloseClick = { dialogVisible = false },
+            onSave = {
+                game.newGame(it)
+                dialogVisible = false
+            },
         )
     }
 }

@@ -12,16 +12,16 @@ fun DragAndDropEffect(viewId: String) = SideEffect {
     val rootElement = document.getElementById(viewId) as? HTMLElement ?: return@SideEffect
     val titleBar = rootElement.getElementsByClassName("title-bar")[0] as? HTMLDivElement ?: return@SideEffect
 
-    var pos1 = 0
-    var pos2 = 0
-    var pos3 = 0
-    var pos4 = 0
+    var offsetX = 0
+    var offsetY = 0
+    var currentPositionX = 0
+    var currentPositionY = 0
 
     titleBar.onmousedown = { downEvent ->
         downEvent.preventDefault()
 
-        pos3 = downEvent.clientX
-        pos4 = downEvent.clientY
+        currentPositionX = downEvent.clientX
+        currentPositionY = downEvent.clientY
 
         document.onmouseup = { _ ->
             document.onmouseup = null
@@ -32,13 +32,13 @@ fun DragAndDropEffect(viewId: String) = SideEffect {
         document.onmousemove = { moveEvent ->
             moveEvent.preventDefault()
 
-            pos1 = pos3 - moveEvent.clientX
-            pos2 = pos4 - moveEvent.clientY
-            pos3 = moveEvent.clientX
-            pos4 = moveEvent.clientY
+            offsetX = currentPositionX - moveEvent.clientX
+            offsetY = currentPositionY - moveEvent.clientY
+            currentPositionX = moveEvent.clientX
+            currentPositionY = moveEvent.clientY
 
-            rootElement.style.left = (rootElement.offsetLeft - pos1).toString() + "px"
-            rootElement.style.top = (rootElement.offsetTop - pos2).toString() + "px"
+            rootElement.style.left = (rootElement.offsetLeft - offsetX).toString() + "px"
+            rootElement.style.top = (rootElement.offsetTop - offsetY).toString() + "px"
 
             null
         }

@@ -2,12 +2,15 @@ package dev.valvavassori.compose.sweeper.ui.theme
 
 import dev.valvavassori.compose.sweeper.ui.consts.ImageConstants
 import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.AlignSelf
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.StyleSheet
 import org.jetbrains.compose.web.css.alignItems
+import org.jetbrains.compose.web.css.alignSelf
 import org.jetbrains.compose.web.css.backgroundColor
 import org.jetbrains.compose.web.css.backgroundImage
 import org.jetbrains.compose.web.css.backgroundPosition
@@ -16,6 +19,7 @@ import org.jetbrains.compose.web.css.backgroundSize
 import org.jetbrains.compose.web.css.bottom
 import org.jetbrains.compose.web.css.color
 import org.jetbrains.compose.web.css.display
+import org.jetbrains.compose.web.css.flexDirection
 import org.jetbrains.compose.web.css.fontSize
 import org.jetbrains.compose.web.css.fontWeight
 import org.jetbrains.compose.web.css.height
@@ -98,10 +102,6 @@ object MineSweeperCSS: StyleSheet() {
         }
     }
 
-    val gameWindow by style {
-        position(Position.Absolute)
-    }
-
     val gameBar by style {
         height(56.px)
         display(DisplayStyle.Flex)
@@ -175,5 +175,12 @@ object MineSweeperCSS: StyleSheet() {
         self + className("bt-💣") style {
             backgroundColor(Color("#c52f2f"))
         }
+    }
+
+    val buttonGroup by style {
+        display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Row)
+        justifyContent(JustifyContent.End)
+        padding(0.px, 10.px, 6.px)
     }
 }

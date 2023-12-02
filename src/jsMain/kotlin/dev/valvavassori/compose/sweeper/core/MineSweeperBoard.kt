@@ -13,10 +13,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MineSweeperBoard(difficulty: Difficulty): AutoCloseable {
+class MineSweeperBoard(difficulty: Difficulty) {
     private val coroutineScope by lazy { MainScope() }
     private var rows = 0
     private var columns = 0
+
+    var difficulty: Difficulty = difficulty
+        private set
 
     private val _playerState = MutableStateFlow(PlayerState.ALIVE)
     val playerState = _playerState.asStateFlow()
@@ -31,9 +34,13 @@ class MineSweeperBoard(difficulty: Difficulty): AutoCloseable {
     private val _playsCount = MutableStateFlow(0)
     val playsCount = _playsCount.asStateFlow()
 
-    init { newGame(difficulty) }
+    init {
+        newGame(difficulty)
+    }
 
     fun newGame(difficulty: Difficulty) {
+        this.difficulty = difficulty
+
         tickTask?.cancel()
         tickTask = null
 
@@ -101,11 +108,11 @@ class MineSweeperBoard(difficulty: Difficulty): AutoCloseable {
             .filter { it.value.isDigit() }
             .none { !it.isOpen }
 
-        if (allNumbersOpen) _playerState.value = PlayerState.VICTORY
-    }
-
-    override fun close() {
-        coroutineScope.cancel()
+        if (allNumbersOpen) {
+            _playerState.value = PlayerState.VICTORY
+            tickTask?.cancel()
+            tickTask = null
+        }
     }
 
     private fun openInternal(
@@ -149,7 +156,7 @@ class MineSweeperBoard(difficulty: Difficulty): AutoCloseable {
     private fun startTimer() {
         if (tickTask != null) return
         tickTask = coroutineScope.launch {
-            while(true) {
+            while (true) {
                 _gameDuration.value += 1
                 delay(1000)
             }

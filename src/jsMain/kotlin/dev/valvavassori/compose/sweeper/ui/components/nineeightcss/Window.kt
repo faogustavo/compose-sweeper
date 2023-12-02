@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import dev.valvassori.theme.NineEightCSS
 import dev.valvavassori.compose.sweeper.ui.behavior.DragAndDropEffect
 import org.jetbrains.compose.web.dom.AttrBuilderContext
+import org.jetbrains.compose.web.dom.ContentBuilder
 import org.jetbrains.compose.web.dom.Div
 import org.w3c.dom.HTMLDivElement
 
@@ -12,17 +13,18 @@ fun Window(
     viewId: String? = null,
     draggable: Boolean = false,
     attrs: AttrBuilderContext<HTMLDivElement>? = null,
-    content: @Composable () -> Unit
+    content: ContentBuilder<HTMLDivElement>,
 ) {
     if (draggable && viewId != null) {
         DragAndDropEffect(viewId)
     }
 
-    Div({
-        attrs?.invoke(this)
-        viewId?.let(::id)
-        classes(NineEightCSS.window)
-    }) {
-        content()
-    }
+    Div(
+        attrs = {
+            attrs?.invoke(this)
+            viewId?.let(::id)
+            classes(NineEightCSS.window)
+        },
+        content = content
+    )
 }
