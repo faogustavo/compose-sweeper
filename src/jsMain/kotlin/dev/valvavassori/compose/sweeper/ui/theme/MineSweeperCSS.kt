@@ -38,9 +38,6 @@ import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.width
 
 object MineSweeperCSS: StyleSheet() {
-    const val lowerContainer = "lowerContainer"
-    const val higherContainer = "higherContainer"
-
     init {
         "html, body" style {
             height(98.percent)
@@ -63,6 +60,14 @@ object MineSweeperCSS: StyleSheet() {
         "td" style {
             padding(0.px)
         }
+    }
+
+    val higherContainer by style {
+        property("box-shadow", "inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf, inset -2px -2px grey, inset 2px 2px #ffffff")
+    }
+
+    val lowerContainer by style {
+        property("box-shadow", "inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080")
     }
 
     val taskBar by style {
@@ -115,6 +120,7 @@ object MineSweeperCSS: StyleSheet() {
             minWidth(36.px)
             fontSize(28.px)
             padding(0.px)
+            color(Color.black)
         }
 
         "span" style {
@@ -138,6 +144,7 @@ object MineSweeperCSS: StyleSheet() {
 
         self + className("active") style {
             fontWeight("bold")
+            property("box-shadow", "inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080")
         }
 
         self + className("bt-1") style {
